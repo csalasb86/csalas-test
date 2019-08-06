@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  starts_at: 2019-08-06 10:38:33
+  ends_at: 2019-08-06 10:38:33
+  load_type: one
+  load_sum: 
+  cities: MyText
+  stops_amount: 1
+
+two:
+  starts_at: 2019-08-06 10:38:33
+  ends_at: 2019-08-06 10:38:33
+  load_type: two
+  load_sum: 
+  cities: MyText
+  stops_amount: 1
