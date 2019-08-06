@@ -1,1 +1,30 @@
-%h3 Carlos
+.header
+  .float-left
+    %h3 Scheduler
+  .float-right
+    %a.btn.btn-primary{:href => visitors_assign_path, :role => "button"} Asignar rutas
+
+%table.table
+  %thead.thead-dark
+    %tr
+      %th{:scope => "col"} Vehículo
+      %th{:scope => "col"} Conductor
+      %th{:scope => "col"} Fecha de inicio
+      %th{:scope => "col"} Fecha de fin
+      -#
+        %th{:scope => "col"} Tipo de carga
+        %th{:scope => "col"} Carga total
+        %th{:scope => "col"} Comunas
+        %th{:scope => "col"} Paradas
+  %tbody
+    - @routes.each do | route |
+      %tr
+        %td= route.vehicle_id
+        %td= route.driver_id
+        %th= route.starts_at
+        %td= route.ends_at
+        -#
+          %td= route.load_type.name unless route.load_type_id.nil?
+          %td= route.load_sum
+          %td= route.cities.join("<br/>").html_safe
+          %td= route.stops_amount
