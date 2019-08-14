@@ -22,4 +22,10 @@ class Route < ApplicationRecord
     .where("starts_at >= ?", DateTime.now.in_time_zone(Time.zone).beginning_of_day)
     .where("ends_at <= ?", DateTime.now.in_time_zone(Time.zone).end_of_day)
   }
+
+  scope :unfinished, -> { 
+    where.not(vehicle_id: nil).where.not(driver_id: nil)
+    .where("starts_at >= ?", DateTime.now.in_time_zone(Time.zone).beginning_of_day)
+    .where("ends_at >= ?", DateTime.parse("2019-08-14 16:00:00"))#DateTime.now.in_time_zone(Time.zone))
+  }
 end

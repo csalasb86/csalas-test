@@ -17,6 +17,7 @@ class SchedulerService < ApplicationService
         # verificar que la capacity de vehicle sea mayor o igual a load_sum de route
       if drivers.count > 0
         drivers.each do | driver |
+          vehicle_id = nil
           # si el driver tiene vehicle y cumple con los requisitos lo asignamos
           vehicle = nil
           driver_today_vehicle = get_driver_today_vehicle(route, driver)
@@ -36,18 +37,31 @@ class SchedulerService < ApplicationService
             
             if vehicles.count > 0
               vehicles.each do | vehicle |
-                if vehicle.load_type_id == route.load_type_id && vehicle.capacity >= route.load_sum
+                vehicle_not_assigned = Route.assigned_today(vehicle.id, driver.id).count == 0
+                puts "driver #{driver.id} verificando vehicle_id #{vehicle.id} vehicle_not_assigned #{vehicle_not_assigned}"
+                if vehicle.load_type_id == route.load_type_id && vehicle.capacity >= route.load_sum && vehicle_not_assigned
                   driver_id = driver.id
                   vehicle_id = vehicle.id
+                  puts "driver_id #{driver_id} | vehicle_id #{vehicle_id} vehicle_not_assigned NO ASIGNADO" 
+                else
+                  puts "driver_id #{driver_id} | vehicle_id #{vehicle_id} vehicle_not_assigned YA ASIGNADO" 
                 end
               end
             end
           end
           if !driver_id.nil? && !vehicle_id.nil?
-            vehicle_not_assigned = Route.assigned_today(vehicle_id, driver_id).count == 0
-            if vehicle_not_assigned
-              route.update({ driver_id: driver_id, vehicle_id: vehicle_id })
-            end
+            # puts "driver_id #{driver_id} | vehicle_id #{vehicle_id}"
+            # vehicle_not_assigned = Route.assigned_today(vehicle_id, driver_id).count == 0
+            # puts "vehicle_not_assigned #{vehicle_not_assigned}"
+            # if vehicle_not_assigned
+            #   route.update({ driver_id: driver_id, vehicle_id: vehicle_id })
+            # else
+            #   puts "vehiculo ya asignado"
+            # end
+            route.update({ driver_id: driver_id, vehicle_id: vehicle_id })
+            puts "driver_id #{driver_id} | vehicle_id #{vehicle_id} ASIGNADO!" 
+          else
+            puts "driver_id #{driver_id} | vehicle_id #{vehicle_id} no pudo ser asignado" 
           end
         end
       end
@@ -59,6 +73,11 @@ class SchedulerService < ApplicationService
       driver_ids = []
       driver_ids_finished = []
 
+      # la primera vez
+      driver_ids << Driver.where('cities && ARRAY[?]', route.cities)
+        .where("max_stops_amount >= ?", route.stops_amount)
+        .pluck(:id)
+
       # liberar drivers con rutas ya terminadas y que cumplan los requisitos
       finished_routes = Route.finished
       unless finished_routes.blank?
@@ -66,14 +85,19 @@ class SchedulerService < ApplicationService
           .where('cities && ARRAY[?]', route.cities)
           .where("max_stops_amount >= ?", route.stops_amount)
           .pluck(:id)
+        driver_ids = (driver_ids + driver_ids_finished).flatten
       end
 
-      # la primera vez
-      driver_ids << Driver.where('cities && ARRAY[?]', route.cities)
-        .where("max_stops_amount >= ?", route.stops_amount)
-        .pluck(:id)
+      # descartar drivers con rutas no terminadas
+      unfinished_routes = Route.unfinished
+      unless unfinished_routes.blank?
+        driver_ids_unfinished = unfinished_routes.pluck(:driver_id)
+        puts "driver_ids #{driver_ids}"
+        puts "driver_ids_unfinished #{driver_ids_unfinished}"
+        driver_ids = driver_ids.reject {|d| driver_ids_unfinished.include? d}
+        puts "driver_ids #{driver_ids}"
+      end
 
-      driver_ids = (driver_ids + driver_ids_finished).flatten
       Driver.where(id: driver_ids)
     end
 
@@ -88,11 +112,24 @@ class SchedulerService < ApplicationService
       # liberar vehicles con rutas ya terminadas y que cumplan los requisitos
       finished_routes = Route.finished
       unless finished_routes.blank?
-        vehicle_ids_finished << Vehicle.where(driver_id: nil).where(load_type_id: route.load_type_id)
-          .where("capacity >= ?", route.load_sum).pluck(:id)
+        # vehicle_ids_finished << Vehicle.where(driver_id: nil).where(load_type_id: route.load_type_id)
+        #   .where("capacity >= ?", route.load_sum).pluck(:id)
+        vehicle_ids_finished << Vehicle.where(id: finished_routes.pluck(:vehicle_id))
+          .where(driver_id: nil).where(load_type_id: route.load_type_id)
+          .where("capacity >= ?", route.load_sum)
+          .pluck(:id)
+        vehicle_ids = (vehicle_ids + vehicle_ids_finished).flatten
       end
 
-      vehicle_ids = (vehicle_ids + vehicle_ids_finished).flatten
+      # descartar drivers con rutas no terminadas
+      unfinished_routes = Route.unfinished
+      unless unfinished_routes.blank?
+        vehicle_ids_unfinished = unfinished_routes.pluck(:vehicle_id)
+        puts "vehicle_ids #{vehicle_ids}"
+        puts "vehicle_ids_unfinished #{vehicle_ids_unfinished}"
+        vehicle_ids = vehicle_ids.reject {|d| vehicle_ids_unfinished.include? d}
+        puts "vehicle_ids #{vehicle_ids}"
+      end
 
       Vehicle.where(id: vehicle_ids)
     end
