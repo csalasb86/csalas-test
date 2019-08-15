@@ -1,7 +1,7 @@
 class Route < ApplicationRecord
   belongs_to :load_type
-  belongs_to :driver
-  belongs_to :vehicle
+  belongs_to :driver, optional: true
+  belongs_to :vehicle, optional: true
 
   scope :unassigned, -> { 
     where(vehicle_id: nil).where(driver_id: nil)
