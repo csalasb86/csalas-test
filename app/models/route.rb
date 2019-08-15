@@ -7,7 +7,7 @@ class Route < ApplicationRecord
     where(vehicle_id: nil).where(driver_id: nil)
     .where("starts_at >= ?", DateTime.now.in_time_zone(Time.zone).beginning_of_day)
     .where("ends_at <= ?", DateTime.now.in_time_zone(Time.zone).end_of_day)
-    .order(:ends_at)
+    .order(:starts_at).order(:ends_at)
   }
 
   # rutas asignadas y terminadas
@@ -26,6 +26,6 @@ class Route < ApplicationRecord
   scope :unfinished, -> { 
     where.not(vehicle_id: nil).where.not(driver_id: nil)
     .where("starts_at >= ?", DateTime.now.in_time_zone(Time.zone).beginning_of_day)
-    .where("ends_at >= ?", DateTime.parse("2019-08-14 16:00:00"))#DateTime.now.in_time_zone(Time.zone))
+    .where("ends_at >= ?", DateTime.now.in_time_zone(Time.zone))
   }
 end
