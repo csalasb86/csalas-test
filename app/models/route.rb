@@ -1,13 +1,13 @@
 class Route < ApplicationRecord
   belongs_to :load_type
-  belongs_to :driver
-  belongs_to :vehicle
+  belongs_to :driver, optional: true
+  belongs_to :vehicle, optional: true
 
   scope :unassigned, -> { 
     where(vehicle_id: nil).where(driver_id: nil)
     .where("starts_at >= ?", DateTime.now.in_time_zone(Time.zone).beginning_of_day)
     .where("ends_at <= ?", DateTime.now.in_time_zone(Time.zone).end_of_day)
-    .order(:ends_at)
+    .order(:starts_at).order(:ends_at)
   }
 
   # rutas asignadas y terminadas
@@ -21,5 +21,11 @@ class Route < ApplicationRecord
     where(vehicle_id: vehicle_id).where.not(driver_id: driver_id)
     .where("starts_at >= ?", DateTime.now.in_time_zone(Time.zone).beginning_of_day)
     .where("ends_at <= ?", DateTime.now.in_time_zone(Time.zone).end_of_day)
+  }
+
+  scope :unfinished, -> { 
+    where.not(vehicle_id: nil).where.not(driver_id: nil)
+    .where("starts_at >= ?", DateTime.now.in_time_zone(Time.zone).beginning_of_day)
+    .where("ends_at >= ?", DateTime.now.in_time_zone(Time.zone))
   }
 end
