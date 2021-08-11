@@ -252,7 +252,7 @@ DEPENDENCIES
   mini_racer
   pg
   puma (~> 4.3)
-  rails (~> 5.2.3)
+  rails (= 5.2.6)
   rails_layout
   sass-rails (~> 5.0)
   selenium-webdriver

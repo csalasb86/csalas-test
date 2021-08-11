@@ -16,7 +16,7 @@ development:
   adapter:  postgresql
   host:     localhost
   encoding: unicode
-  database: csalas-test_development
+  database: csalas_test_development
   pool:     5
   username: postgres
   password: carlos
@@ -44,7 +44,7 @@ test:
   adapter:  postgresql
   host:     localhost
   encoding: unicode
-  database: csalas-test_test
+  database: csalas_test_test
   pool:     5
   username: postgres
   password: carlos
@@ -54,7 +54,7 @@ production:
   adapter:  postgresql
   host:     localhost
   encoding: unicode
-  database: csalas-test_production
+  database: csalas_test_production
   pool:     5
   username: postgres
   password: carlos
