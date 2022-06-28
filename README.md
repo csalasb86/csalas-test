@@ -1,20 +1,17 @@
-Csalas Test
-================
+# Csalas Test
 
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
-Ruby on Rails
--------------
+## Ruby on Rails
 
 This application requires:
 
 - Ruby 2.6.3
-- Rails 5.2.3
+- Rails 5.2.8
 
 Learn more about [Installing Rails](http://railsapps.github.io/installing-rails.html).
 
-Getting Started
----------------
+## Getting Started
 
 - rake db:create
 - rake db:migrate
