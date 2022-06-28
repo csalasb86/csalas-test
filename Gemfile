@@ -28,7 +28,7 @@ gem 'haml-rails'
 gem 'high_voltage'
 gem 'jquery-rails'
 gem 'pg'
-gem 'mini_racer'
+gem 'mini_racer', '~> 0.6.2'
 group :development do
   gem 'better_errors'
   gem 'html2haml'
