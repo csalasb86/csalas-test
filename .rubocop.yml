@@ -1,0 +1,79 @@
+plugins:
+  - rubocop-rails
+  - rubocop-performance
+
+AllCops:
+  TargetRubyVersion: 3.3
+  NewCops: enable
+  Exclude:
+    - 'bin/**/*'
+    - 'db/schema.rb'
+    - 'db/migrate/**/*'
+    - 'vendor/**/*'
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
+    - 'log/**/*'
+    - 'public/**/*'
+    - 'storage/**/*'
+    - 'config/boot.rb'
+    - 'config/environment.rb'
+    - 'config/environments/**/*'
+    - 'config/initializers/**/*'
+    - 'config/puma.rb'
+    - 'config/spring.rb'
+    - 'config.ru'
+    - 'Rakefile'
+
+# Standard Ruby style rules
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  EnforcedStyle: always
+
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - 'db/seeds.rb'
+
+Metrics/MethodLength:
+  Max: 25
+  Exclude:
+    - 'app/services/scheduler_service.rb'
+
+Metrics/ClassLength:
+  Max: 150
+
+Metrics/BlockLength:
+  Exclude:
+    - 'config/routes.rb'
+    - 'test/**/*'
+    - 'app/services/scheduler_service.rb'
+
+Metrics/AbcSize:
+  Exclude:
+    - 'app/services/scheduler_service.rb'
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - 'app/services/scheduler_service.rb'
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'app/services/scheduler_service.rb'
+
+# Rails specific configurations
+Rails/Output:
+  Exclude:
+    - 'db/seeds.rb'
+
+Rails/FilePath:
+  Enabled: false
+
+# Performance optimizations
+Performance/RedundantMerge:
+  Enabled: true
+
+Performance/StringReplacement:
+  Enabled: true

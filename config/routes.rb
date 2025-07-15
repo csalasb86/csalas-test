@@ -1,4 +1,6 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   root to: 'visitors#index'
-  get 'visitors/assign', :to => 'visitors#assign', as: :visitors_assign
+  get 'visitors/assign', to: 'visitors#assign', as: :visitors_assign
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VisitorsController < ApplicationController
   def index
     @routes = Route.order(:ends_at).all
@@ -5,6 +7,6 @@ class VisitorsController < ApplicationController
 
   def assign
     SchedulerService.call
-    redirect_to root_path, notice: 'Rutas asignadas correctamente'
+    redirect_to root_path, notice: I18n.t('notices.routes_assigned')
   end
 end
